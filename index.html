@@ -18,78 +18,43 @@
     --muted: #5a5a48;
     --glow: rgba(200,245,32,0.18);
     --red-glow: rgba(255,60,60,0.18);
+    --teal-glow: rgba(32,245,200,0.18);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Share Tech Mono', monospace;
     min-height: 100vh;
     overflow-x: hidden;
-    position: relative;
   }
-
-  /* Scanlines overlay */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.08) 2px,
-      rgba(0,0,0,0.08) 4px
-    );
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
     pointer-events: none;
     z-index: 1000;
   }
+  .container { max-width: 1040px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 
-  /* Noise texture */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 999;
-    opacity: 0.4;
-  }
-
-  .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
-  }
-
-  /* Header */
+  /* ── HEADER ── */
   .header {
     border-bottom: 2px solid var(--accent);
-    padding-bottom: 1.5rem;
-    margin-bottom: 2.5rem;
+    padding-bottom: 1.2rem;
+    margin-bottom: 2rem;
     position: relative;
   }
-
   .header::after {
     content: '';
     position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 1px;
+    bottom: -2px; left: 0;
+    width: 100%; height: 1px;
     background: var(--accent);
-    box-shadow: 0 0 12px var(--glow), 0 0 40px var(--glow);
+    box-shadow: 0 0 16px var(--glow), 0 0 50px var(--glow);
   }
-
-  .logo-row {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  .logo-block {}
   .logo {
     font-family: 'Oswald', sans-serif;
     font-size: 3rem;
@@ -98,382 +63,209 @@
     letter-spacing: 0.05em;
     text-shadow: 0 0 20px var(--glow), 0 0 60px rgba(200,245,32,0.1);
     line-height: 1;
+    animation: glitch 9s steps(1) infinite;
   }
-
-  .subtitle {
-    font-family: 'VT323', monospace;
-    font-size: 1.4rem;
-    color: var(--muted);
-    letter-spacing: 0.2em;
-  }
-
-  .status-bar {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 0.8rem;
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-
-  .pulse {
-    width: 7px;
-    height: 7px;
-    background: var(--accent3);
-    border-radius: 50%;
-    animation: pulse 1.6s ease-in-out infinite;
-    box-shadow: 0 0 8px var(--accent3);
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.7); }
-  }
-
-  /* Live ticker */
-  .price-ticker {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    padding: 1.2rem 1.5rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .price-ticker::before {
-    content: 'LIVE FEED';
-    position: absolute;
-    top: 0.4rem;
-    right: 0.8rem;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    animation: blink 1.2s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  .ticker-item {}
-  .ticker-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 0.3rem;
-  }
-
-  .ticker-value {
-    font-family: 'VT323', monospace;
-    font-size: 2.2rem;
-    line-height: 1;
-    color: var(--accent);
-    text-shadow: 0 0 15px var(--glow);
-    transition: all 0.3s;
-  }
-
-  .ticker-value.flash {
-    color: #fff;
-    text-shadow: 0 0 20px #fff;
-  }
-
-  .ticker-value.big {
-    font-size: 3rem;
-  }
-
-  .ticker-value.usd {
-    color: var(--accent3);
-    text-shadow: 0 0 15px rgba(32,245,200,0.3);
-  }
-
-  .ticker-sub {
-    font-size: 0.65rem;
-    color: var(--muted);
-    margin-top: 0.2rem;
-  }
-
-  /* Wallet section */
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 1rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .section-header::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .wallet-input-row {
-    display: flex;
-    gap: 0.6rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .wallet-input {
-    flex: 1;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.8rem;
-    padding: 0.7rem 1rem;
-    outline: none;
-    transition: border-color 0.2s;
-    letter-spacing: 0.05em;
-  }
-
-  .wallet-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--glow);
-  }
-
-  .wallet-input::placeholder { color: var(--muted); }
-
-  .btn {
-    background: transparent;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    padding: 0.7rem 1.2rem;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .btn:hover {
-    background: var(--accent);
-    color: var(--bg);
-    box-shadow: 0 0 15px var(--glow);
-  }
-
-  .btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  .btn-danger {
-    border-color: var(--accent2);
-    color: var(--accent2);
-  }
-
-  .btn-danger:hover {
-    background: var(--accent2);
-    color: var(--bg);
-    box-shadow: 0 0 15px var(--red-glow);
-  }
-
-  /* Wallet list */
-  .wallet-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-  }
-
-  .wallet-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 0.8rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    animation: slideIn 0.2s ease;
-  }
-
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-8px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .wallet-card.loading {
-    border-left: 2px solid var(--accent3);
-    animation: slideIn 0.2s ease;
-  }
-
-  .wallet-card.error {
-    border-left: 2px solid var(--accent2);
-  }
-
-  .wallet-card.loaded {
-    border-left: 2px solid var(--accent);
-  }
-
-  .wallet-info { flex: 1; min-width: 0; }
-
-  .wallet-addr {
-    font-size: 0.75rem;
-    letter-spacing: 0.04em;
-    color: var(--text);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .wallet-meta {
-    font-size: 0.65rem;
-    color: var(--muted);
-    margin-top: 0.2rem;
-    letter-spacing: 0.08em;
-  }
-
-  .wallet-count {
-    font-family: 'VT323', monospace;
-    font-size: 2rem;
-    color: var(--accent);
-    min-width: 2.5rem;
-    text-align: right;
-    line-height: 1;
-    text-shadow: 0 0 10px var(--glow);
-  }
-
-  .wallet-remove {
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0.2rem;
-    transition: color 0.15s;
-    line-height: 1;
-  }
-
-  .wallet-remove:hover { color: var(--accent2); }
-
-  /* Log / terminal */
-  .terminal {
-    background: #0c0c0a;
-    border: 1px solid var(--border);
-    padding: 0.8rem 1rem;
-    font-size: 0.68rem;
-    line-height: 1.7;
-    color: var(--muted);
-    max-height: 120px;
-    overflow-y: auto;
-    scroll-behavior: smooth;
-  }
-
-  .terminal::-webkit-scrollbar { width: 4px; }
-  .terminal::-webkit-scrollbar-track { background: transparent; }
-  .terminal::-webkit-scrollbar-thumb { background: var(--border); }
-
-  .log-line { letter-spacing: 0.04em; }
-  .log-ok { color: var(--accent3); }
-  .log-warn { color: #f5a020; }
-  .log-err { color: var(--accent2); }
-  .log-info { color: var(--accent); }
-
-  /* refresh bar */
-  .refresh-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    font-size: 0.68rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-
-  .refresh-bar-track {
-    flex: 1;
-    height: 2px;
-    background: var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .refresh-bar-fill {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--glow);
-    transition: width 1s linear;
-  }
-
-  /* Empty state */
-  .empty {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--muted);
-    font-size: 0.8rem;
-    letter-spacing: 0.15em;
-    border: 1px dashed var(--border);
-  }
-
-  .empty .big-icon {
-    font-family: 'VT323', monospace;
-    font-size: 3rem;
-    color: var(--border);
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-
-  /* Glitch animation for title */
   @keyframes glitch {
-    0%, 92%, 100% { clip-path: none; transform: none; }
-    93% { clip-path: polygon(0 20%, 100% 20%, 100% 30%, 0 30%); transform: translateX(-3px); }
-    94% { clip-path: polygon(0 60%, 100% 60%, 100% 70%, 0 70%); transform: translateX(3px); }
-    95% { clip-path: none; transform: none; }
+    0%,92%,100%{clip-path:none;transform:none}
+    93%{clip-path:polygon(0 20%,100% 20%,100% 30%,0 30%);transform:translateX(-3px)}
+    94%{clip-path:polygon(0 60%,100% 60%,100% 70%,0 70%);transform:translateX(3px)}
+    95%{clip-path:none;transform:none}
   }
-
-  .logo { animation: glitch 8s steps(1) infinite; }
-
-  /* Grid divider */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 2rem 0;
+  .subtitle { font-family:'VT323',monospace; font-size:1.4rem; color:var(--muted); letter-spacing:0.2em; }
+  .header-links { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; }
+  .ext-link {
+    display:inline-flex; align-items:center; gap:0.4rem;
+    border:1px solid var(--border);
+    color:var(--muted);
+    font-size:0.65rem;
+    letter-spacing:0.15em;
+    padding:0.4rem 0.8rem;
+    text-decoration:none;
+    text-transform:uppercase;
+    transition:all 0.15s;
   }
+  .ext-link:hover { border-color:var(--accent); color:var(--accent); box-shadow:0 0 10px var(--glow); }
+  .ext-link.twitter:hover { border-color:#1d9bf0; color:#1d9bf0; box-shadow:0 0 10px rgba(29,155,240,0.2); }
+  .status-bar { display:flex; align-items:center; gap:1rem; margin-top:0.8rem; font-size:0.7rem; color:var(--muted); letter-spacing:0.1em; }
+  .pulse { width:7px; height:7px; background:var(--accent3); border-radius:50%; animation:pulse 1.6s ease-in-out infinite; box-shadow:0 0 8px var(--accent3); }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
 
-  /* Countdown */
-  .countdown { font-family: 'VT323', monospace; font-size: 1.2rem; color: var(--accent3); }
+  /* ── TICKER ── */
+  .price-ticker {
+    background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent);
+    padding:1.2rem 1.5rem;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1rem;
+    margin-bottom:1.5rem; position:relative; overflow:hidden;
+  }
+  .price-ticker::before {
+    content:'LIVE FEED'; position:absolute; top:0.4rem; right:0.8rem;
+    font-size:0.6rem; letter-spacing:0.2em; color:var(--accent);
+    animation:blink 1.2s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .ticker-label { font-size:0.62rem; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase; margin-bottom:0.3rem; }
+  .ticker-value { font-family:'VT323',monospace; font-size:2.2rem; line-height:1; color:var(--accent); text-shadow:0 0 15px var(--glow); transition:all 0.3s; }
+  .ticker-value.flash { color:#fff; text-shadow:0 0 20px #fff; }
+  .ticker-value.big { font-size:3rem; }
+  .ticker-value.usd { color:var(--accent3); text-shadow:0 0 15px var(--teal-glow); }
+  .ticker-value.alert-up { color:#00ff88; }
+  .ticker-value.alert-dn { color:var(--accent2); }
+  .ticker-sub { font-size:0.62rem; color:var(--muted); margin-top:0.2rem; }
 
-  /* Loading spinner */
-  @keyframes spin {
-    to { transform: rotate(360deg); }
+  /* ── TABS ── */
+  .tabs { display:flex; gap:0; margin-bottom:1.5rem; border-bottom:1px solid var(--border); }
+  .tab {
+    background:none; border:none; border-bottom:2px solid transparent;
+    color:var(--muted); font-family:'Share Tech Mono',monospace;
+    font-size:0.68rem; letter-spacing:0.15em; padding:0.6rem 1.2rem;
+    cursor:pointer; text-transform:uppercase; margin-bottom:-1px; transition:all 0.15s;
   }
-  .spinner {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent3);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    vertical-align: middle;
-    margin-right: 0.4rem;
-  }
+  .tab:hover { color:var(--text); }
+  .tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
 
-  .note {
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    line-height: 1.6;
-    margin-top: 1rem;
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--border);
-    border-left: 2px solid var(--muted);
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display:flex; align-items:center; gap:0.8rem;
+    margin-bottom:1rem; font-size:0.68rem; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase;
   }
+  .section-header::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* ── WALLET INPUT ── */
+  .wallet-input-row { display:flex; gap:0.6rem; margin-bottom:1.2rem; }
+  .wallet-input {
+    flex:1; background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:'Share Tech Mono',monospace; font-size:0.8rem;
+    padding:0.7rem 1rem; outline:none; transition:border-color 0.2s; letter-spacing:0.05em;
+  }
+  .wallet-input:focus { border-color:var(--accent); box-shadow:0 0 0 1px var(--glow); }
+  .wallet-input::placeholder { color:var(--muted); }
+  .btn {
+    background:transparent; border:1px solid var(--accent); color:var(--accent);
+    font-family:'Share Tech Mono',monospace; font-size:0.72rem; letter-spacing:0.15em;
+    padding:0.7rem 1.1rem; cursor:pointer; transition:all 0.15s; text-transform:uppercase; white-space:nowrap;
+  }
+  .btn:hover { background:var(--accent); color:var(--bg); box-shadow:0 0 15px var(--glow); }
+  .btn:disabled { opacity:0.3; cursor:not-allowed; }
+  .btn-sm { padding:0.35rem 0.7rem; font-size:0.62rem; }
+  .btn-teal { border-color:var(--accent3); color:var(--accent3); }
+  .btn-teal:hover { background:var(--accent3); color:var(--bg); box-shadow:0 0 12px var(--teal-glow); }
+
+  /* ── WALLET CARDS ── */
+  .wallet-list { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem; }
+  .wallet-card {
+    background:var(--surface); border:1px solid var(--border);
+    padding:0.8rem 1rem; display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; animation:slideIn 0.2s ease; cursor:pointer; transition:border-color 0.15s;
+  }
+  .wallet-card:hover { border-color:var(--accent); }
+  @keyframes slideIn { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+  .wallet-card.loading { border-left:2px solid var(--accent3); }
+  .wallet-card.error { border-left:2px solid var(--accent2); }
+  .wallet-card.loaded { border-left:2px solid var(--accent); }
+  .wallet-info { flex:1; min-width:0; }
+  .wallet-addr { font-size:0.75rem; letter-spacing:0.04em; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .wallet-meta { font-size:0.62rem; color:var(--muted); margin-top:0.2rem; letter-spacing:0.06em; }
+  .wallet-count { font-family:'VT323',monospace; font-size:2rem; color:var(--accent); min-width:2.5rem; text-align:right; line-height:1; text-shadow:0 0 10px var(--glow); }
+  .wallet-remove { background:none; border:none; color:var(--muted); cursor:pointer; font-size:1rem; padding:0.2rem; transition:color 0.15s; line-height:1; }
+  .wallet-remove:hover { color:var(--accent2); }
+  .wallet-actions { display:flex; align-items:center; gap:0.4rem; }
+
+  /* ── NFT GRID ── */
+  .nft-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:0.8rem; margin-top:1rem; }
+  .nft-card {
+    background:var(--surface); border:1px solid var(--border);
+    overflow:hidden; transition:all 0.2s; cursor:pointer; text-decoration:none; display:block;
+  }
+  .nft-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 4px 20px rgba(200,245,32,0.1); }
+  .nft-img { width:100%; aspect-ratio:1; object-fit:cover; display:block; background:var(--border); }
+  .nft-img-placeholder { width:100%; aspect-ratio:1; background:var(--border); display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.6rem; letter-spacing:0.1em; }
+  .nft-info { padding:0.5rem 0.6rem; }
+  .nft-name { font-size:0.62rem; color:var(--text); letter-spacing:0.05em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .nft-wallet { font-size:0.55rem; color:var(--muted); margin-top:0.1rem; }
+
+  /* ── FLOOR CHART ── */
+  .chart-wrap { background:var(--surface); border:1px solid var(--border); padding:1rem 1.2rem; margin-bottom:1.5rem; }
+  .chart-title-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem; }
+  .chart-title { font-size:0.65rem; letter-spacing:0.15em; color:var(--muted); text-transform:uppercase; }
+  canvas#floorChart { width:100% !important; height:120px !important; display:block; }
+
+  /* ── SALES FEED ── */
+  .sales-list { display:flex; flex-direction:column; gap:0.4rem; }
+  .sale-row {
+    background:var(--surface); border:1px solid var(--border);
+    padding:0.6rem 0.9rem; display:flex; align-items:center; gap:1rem;
+    font-size:0.68rem; animation:slideIn 0.25s ease;
+  }
+  .sale-name { flex:1; color:var(--text); letter-spacing:0.04em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .sale-price { color:var(--accent); font-family:'VT323',monospace; font-size:1.3rem; white-space:nowrap; }
+  .sale-usd { color:var(--muted); font-size:0.6rem; }
+  .sale-time { color:var(--muted); font-size:0.6rem; white-space:nowrap; }
+  .sale-link { color:var(--muted); text-decoration:none; font-size:0.7rem; transition:color 0.1s; }
+  .sale-link:hover { color:var(--accent); }
+
+  /* ── LEADERBOARD ── */
+  .lb-table { width:100%; border-collapse:collapse; font-size:0.72rem; }
+  .lb-table th { font-size:0.6rem; letter-spacing:0.2em; color:var(--muted); text-align:left; padding:0.4rem 0.8rem; border-bottom:1px solid var(--border); text-transform:uppercase; }
+  .lb-table td { padding:0.6rem 0.8rem; border-bottom:1px solid rgba(42,42,34,0.5); color:var(--text); }
+  .lb-table tr:first-child td { color:var(--accent); }
+  .lb-table tr:hover td { background:rgba(200,245,32,0.03); }
+  .lb-rank { color:var(--muted); width:2rem; }
+  .lb-addr { font-size:0.68rem; letter-spacing:0.04em; }
+  .lb-count { font-family:'VT323',monospace; font-size:1.4rem; color:var(--accent); text-shadow:0 0 8px var(--glow); }
+  .lb-pct { color:var(--muted); font-size:0.62rem; }
+  .lb-you { color:var(--accent3) !important; }
+  .lb-bar-wrap { width:80px; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .lb-bar { height:100%; background:var(--accent); border-radius:2px; }
+
+  /* ── ALERT ── */
+  .alert-section { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent3); padding:1rem 1.2rem; margin-bottom:1.5rem; }
+  .alert-row { display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap; }
+  .alert-label { font-size:0.65rem; letter-spacing:0.15em; color:var(--muted); white-space:nowrap; }
+  .alert-input {
+    background:var(--bg); border:1px solid var(--border); color:var(--text);
+    font-family:'Share Tech Mono',monospace; font-size:0.8rem; padding:0.4rem 0.7rem;
+    outline:none; width:100px; transition:border-color 0.2s;
+  }
+  .alert-input:focus { border-color:var(--accent3); }
+  .alert-status { font-size:0.65rem; color:var(--accent3); letter-spacing:0.1em; margin-top:0.5rem; }
+
+  /* ── TERMINAL ── */
+  .terminal {
+    background:#0c0c0a; border:1px solid var(--border);
+    padding:0.8rem 1rem; font-size:0.65rem; line-height:1.7; color:var(--muted);
+    max-height:110px; overflow-y:auto; scroll-behavior:smooth;
+  }
+  .terminal::-webkit-scrollbar { width:4px; }
+  .terminal::-webkit-scrollbar-thumb { background:var(--border); }
+  .log-line { letter-spacing:0.04em; }
+  .log-ok { color:var(--accent3); }
+  .log-warn { color:#f5a020; }
+  .log-err { color:var(--accent2); }
+  .log-info { color:var(--accent); }
+
+  /* ── REFRESH BAR ── */
+  .refresh-row { display:flex; align-items:center; gap:1rem; margin-top:1.2rem; font-size:0.65rem; color:var(--muted); letter-spacing:0.1em; }
+  .refresh-bar-track { flex:1; height:2px; background:var(--border); position:relative; overflow:hidden; }
+  .refresh-bar-fill { position:absolute; left:0; top:0; height:100%; background:var(--accent); box-shadow:0 0 8px var(--glow); transition:width 1s linear; }
+  .countdown { font-family:'VT323',monospace; font-size:1.2rem; color:var(--accent3); }
+
+  /* ── MISC ── */
+  .empty { text-align:center; padding:2.5rem 1rem; color:var(--muted); font-size:0.75rem; letter-spacing:0.15em; border:1px dashed var(--border); }
+  .empty .big-icon { font-family:'VT323',monospace; font-size:3rem; color:var(--border); display:block; margin-bottom:0.5rem; }
+  .spinner { display:inline-block; width:10px; height:10px; border:2px solid var(--border); border-top-color:var(--accent3); border-radius:50%; animation:spin 0.8s linear infinite; vertical-align:middle; margin-right:0.4rem; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .divider { border:none; border-top:1px solid var(--border); margin:1.5rem 0; }
+  .tag { display:inline-block; font-size:0.55rem; letter-spacing:0.1em; padding:0.1rem 0.4rem; border:1px solid var(--border); color:var(--muted); text-transform:uppercase; margin-left:0.4rem; vertical-align:middle; }
+  .toast {
+    position:fixed; bottom:2rem; right:2rem; z-index:9999;
+    background:var(--surface); border:1px solid var(--accent); border-left:3px solid var(--accent);
+    padding:0.8rem 1.2rem; font-size:0.7rem; letter-spacing:0.1em; color:var(--accent);
+    box-shadow:0 0 20px var(--glow); animation:toastIn 0.2s ease; max-width:320px;
+  }
+  .toast.red { border-color:var(--accent2); border-left-color:var(--accent2); color:var(--accent2); box-shadow:0 0 20px var(--red-glow); }
+  @keyframes toastIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 </style>
 </head>
 <body>
@@ -481,9 +273,16 @@
 
   <!-- HEADER -->
   <header class="header">
-    <div class="logo-row">
-      <div class="logo">ANA'S ARCHIVE</div>
-      <div class="subtitle">// CGG TRACKER //</div>
+    <div class="header-top">
+      <div class="logo-block">
+        <div class="logo">ANA'S ARCHIVE</div>
+        <div class="subtitle">// CGG TRACKER //</div>
+      </div>
+      <div class="header-links">
+        <a class="ext-link" href="https://www.tensor.trade/trade/cyber_gulag_gang" target="_blank">⬡ TENSOR</a>
+        <a class="ext-link" href="https://magiceden.io/marketplace/cyber_gulag_gang" target="_blank">◈ MAGIC EDEN</a>
+        <a class="ext-link twitter" href="https://twitter.com/search?q=CyberGulagGang" target="_blank">𝕏 TWITTER</a>
+      </div>
     </div>
     <div class="status-bar">
       <span class="pulse"></span>
@@ -491,7 +290,7 @@
     </div>
   </header>
 
-  <!-- PRICE TICKER -->
+  <!-- TICKER -->
   <div class="price-ticker">
     <div class="ticker-item">
       <div class="ticker-label">CGG OWNED</div>
@@ -513,27 +312,86 @@
       <div class="ticker-value usd" id="totalUsd">—</div>
       <div class="ticker-sub" id="solPriceLabel">SOL/USD LOADING…</div>
     </div>
+    <div class="ticker-item">
+      <div class="ticker-label">24H CHANGE</div>
+      <div class="ticker-value" id="floorChange">—</div>
+      <div class="ticker-sub" id="floorChangeSub">VS PREV FLOOR</div>
+    </div>
   </div>
 
-  <!-- WALLET INPUT -->
-  <div class="section-header">WALLETS</div>
-  <div class="wallet-input-row">
-    <input class="wallet-input" id="walletInput" type="text"
-      placeholder="PASTE SOLANA WALLET ADDRESS (BASE58)"
-      maxlength="44"
-    />
-    <button class="btn" id="addBtn" onclick="addWallet()">+ ADD</button>
+  <!-- PRICE ALERT -->
+  <div class="alert-section">
+    <div class="alert-row">
+      <span class="alert-label">🔔 ALERT IF FLOOR DROPS BELOW</span>
+      <input class="alert-input" id="alertLow" type="number" step="0.001" placeholder="0.000" min="0">
+      <span class="alert-label">OR RISES ABOVE</span>
+      <input class="alert-input" id="alertHigh" type="number" step="0.001" placeholder="0.000" min="0">
+      <button class="btn btn-teal btn-sm" onclick="saveAlerts()">SET ALERTS</button>
+      <button class="btn btn-sm" style="border-color:var(--muted);color:var(--muted)" onclick="clearAlerts()">CLEAR</button>
+    </div>
+    <div class="alert-status" id="alertStatus"></div>
   </div>
-  <div class="wallet-list" id="walletList">
-    <div class="empty">
-      <span class="big-icon">[EMPTY]</span>
-      NO WALLETS CONNECTED — ADD ONE ABOVE
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('wallets')">WALLETS</button>
+    <button class="tab" onclick="switchTab('nfts')">MY CGGs</button>
+    <button class="tab" onclick="switchTab('chart')">FLOOR CHART</button>
+    <button class="tab" onclick="switchTab('sales')">RECENT SALES</button>
+    <button class="tab" onclick="switchTab('leaderboard')">LEADERBOARD</button>
+  </div>
+
+  <!-- TAB: WALLETS -->
+  <div class="tab-panel active" id="panel-wallets">
+    <div class="section-header">ADD WALLET</div>
+    <div class="wallet-input-row">
+      <input class="wallet-input" id="walletInput" type="text" placeholder="PASTE SOLANA WALLET ADDRESS (BASE58)" maxlength="44"/>
+      <button class="btn" onclick="addWallet()">+ ADD</button>
+    </div>
+    <div class="wallet-list" id="walletList">
+      <div class="empty"><span class="big-icon">[EMPTY]</span>NO WALLETS CONNECTED — ADD ONE ABOVE</div>
+    </div>
+  </div>
+
+  <!-- TAB: MY CGGs -->
+  <div class="tab-panel" id="panel-nfts">
+    <div class="section-header">MY CGG COLLECTION <span class="tag" id="nftCount">0 ITEMS</span></div>
+    <div class="nft-grid" id="nftGrid">
+      <div class="empty" style="grid-column:1/-1"><span class="big-icon">[EMPTY]</span>ADD WALLETS TO SEE YOUR CGGs</div>
+    </div>
+  </div>
+
+  <!-- TAB: FLOOR CHART -->
+  <div class="tab-panel" id="panel-chart">
+    <div class="chart-wrap">
+      <div class="chart-title-row">
+        <span class="chart-title">CGG FLOOR PRICE HISTORY (SESSION)</span>
+        <span class="chart-title" id="chartDataPoints">0 DATA POINTS</span>
+      </div>
+      <canvas id="floorChart"></canvas>
+    </div>
+    <div class="empty" id="chartEmpty" style="display:none"><span class="big-icon">[...]</span>COLLECTING DATA — CHECK BACK AFTER A FEW REFRESHES</div>
+  </div>
+
+  <!-- TAB: RECENT SALES -->
+  <div class="tab-panel" id="panel-sales">
+    <div class="section-header">RECENT CGG SALES <span class="tag">MAGIC EDEN</span></div>
+    <div class="sales-list" id="salesList">
+      <div class="empty"><span class="big-icon">[...]</span>LOADING SALES DATA…</div>
+    </div>
+  </div>
+
+  <!-- TAB: LEADERBOARD -->
+  <div class="tab-panel" id="panel-leaderboard">
+    <div class="section-header">CGG HOLDER LEADERBOARD <span class="tag">TOP 20</span></div>
+    <div id="leaderboardWrap">
+      <div class="empty"><span class="big-icon">[...]</span>LOADING HOLDER DATA…</div>
     </div>
   </div>
 
   <hr class="divider">
 
-  <!-- TERMINAL LOG -->
+  <!-- TERMINAL -->
   <div class="section-header">TERMINAL LOG</div>
   <div class="terminal" id="terminal"></div>
 
@@ -541,48 +399,89 @@
   <div class="refresh-row">
     <span>NEXT REFRESH IN</span>
     <span class="countdown" id="countdown">—</span>
-    <div class="refresh-bar-track">
-      <div class="refresh-bar-fill" id="refreshBar" style="width:0%"></div>
-    </div>
-    <button class="btn" style="padding:0.4rem 0.8rem;font-size:0.65rem;" onclick="refreshAll()">↺ NOW</button>
-  </div>
-
-  <div class="note">
-    ⚠ NFT DATA: Uses Helius DAS API to read wallet NFTs filtered to "Cyber Gulag Gang" (collection address: DSwfRF1j…).
-    Floor price fetched from Magic Eden public API, with CoinGecko as fallback. SOL/USD from CoinGecko.
-    Auto-refreshes every 60 seconds. Read-only — no wallet signing required.
-    For higher rate limits on wallet scanning, get a free Helius API key at helius.dev and replace 'demo' in the HELIUS_RPC constant.
+    <div class="refresh-bar-track"><div class="refresh-bar-fill" id="refreshBar" style="width:0%"></div></div>
+    <button class="btn btn-sm" onclick="refreshAll()">↺ NOW</button>
   </div>
 
 </div>
 
 <script>
-// ==========================================
+// ══════════════════════════════════════════
 // CONFIG
-// ==========================================
-const CGG_COLLECTION_SLUG = 'cyber_gulag_gang'; // Magic Eden slug
-// CGG verified collection address on Solana (from Tensor/ME)
+// ══════════════════════════════════════════
+const CGG_SLUG = 'cyber_gulag_gang';
 const CGG_COLLECTION_ADDRESS = 'DSwfRF1jhhu6HpSuzaig1G19kzP73PfLZBPLofkw6fLD';
-// Public Helius RPC — replace 'demo' with your own key from helius.dev for higher rate limits
 const HELIUS_RPC = 'https://mainnet.helius-rpc.com/?api-key=3011670e-6851-49b1-a300-313d70840050';
-const REFRESH_INTERVAL = 60; // seconds
+const REFRESH_INTERVAL = 60;
+const STORAGE_KEY = 'cgg_tracker_wallets';
+const ALERT_KEY = 'cgg_tracker_alerts';
+const HISTORY_KEY = 'cgg_floor_history';
 
-// ==========================================
+// ══════════════════════════════════════════
 // STATE
-// ==========================================
-let wallets = []; // { address, status, count, error }
+// ══════════════════════════════════════════
+let wallets = [];         // {address, status, count, nfts, error}
 let floorPriceSol = null;
+let prevFloorPriceSol = null;
 let solUsdPrice = null;
-let refreshTimer = null;
-let countdownTimer = null;
+let floorHistory = [];    // [{t, p}]
+let salesData = [];
+let leaderboardData = [];
+let alertLow = null, alertHigh = null;
 let countdownSecs = REFRESH_INTERVAL;
+let countdownTimer = null;
+let chartCtx = null;
 
-// ==========================================
+// ══════════════════════════════════════════
+// PERSIST
+// ══════════════════════════════════════════
+function saveWallets() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(wallets.map(w => w.address))); } catch(e){}
+}
+function loadWallets() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    return saved.filter(a => typeof a === 'string' && a.length >= 32);
+  } catch(e) { return []; }
+}
+function loadAlerts() {
+  try {
+    const a = JSON.parse(localStorage.getItem(ALERT_KEY) || '{}');
+    alertLow = a.low || null; alertHigh = a.high || null;
+    if (alertLow) document.getElementById('alertLow').value = alertLow;
+    if (alertHigh) document.getElementById('alertHigh').value = alertHigh;
+    updateAlertStatus();
+  } catch(e){}
+}
+function loadHistory() {
+  try { floorHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch(e){}
+}
+function saveHistory() {
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(floorHistory.slice(-200))); } catch(e){}
+}
+
+// ══════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const panels = ['wallets','nfts','chart','sales','leaderboard'];
+    t.classList.toggle('active', panels[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'chart') drawChart();
+  if (name === 'sales' && salesData.length === 0) fetchSales();
+  if (name === 'leaderboard' && leaderboardData.length === 0) fetchLeaderboard();
+  if (name === 'nfts') renderNFTs();
+}
+
+// ══════════════════════════════════════════
 // LOGGING
-// ==========================================
+// ══════════════════════════════════════════
 function log(msg, type = '') {
   const t = document.getElementById('terminal');
-  const now = new Date().toLocaleTimeString('en-US', { hour12: false });
+  const now = new Date().toLocaleTimeString('en-US', {hour12:false});
   const line = document.createElement('div');
   line.className = 'log-line' + (type ? ' log-' + type : '');
   line.textContent = `[${now}] ${msg}`;
@@ -590,87 +489,167 @@ function log(msg, type = '') {
   t.scrollTop = t.scrollHeight;
 }
 
-// ==========================================
-// RENDER
-// ==========================================
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+function toast(msg, red = false) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (red ? ' red' : '');
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+// ══════════════════════════════════════════
+// ALERTS
+// ══════════════════════════════════════════
+function saveAlerts() {
+  alertLow = parseFloat(document.getElementById('alertLow').value) || null;
+  alertHigh = parseFloat(document.getElementById('alertHigh').value) || null;
+  try { localStorage.setItem(ALERT_KEY, JSON.stringify({low: alertLow, high: alertHigh})); } catch(e){}
+  updateAlertStatus();
+  toast('ALERTS SAVED');
+}
+function clearAlerts() {
+  alertLow = alertHigh = null;
+  document.getElementById('alertLow').value = '';
+  document.getElementById('alertHigh').value = '';
+  try { localStorage.removeItem(ALERT_KEY); } catch(e){}
+  document.getElementById('alertStatus').textContent = '';
+}
+function updateAlertStatus() {
+  const parts = [];
+  if (alertLow) parts.push(`LOW ALERT: ${alertLow} SOL`);
+  if (alertHigh) parts.push(`HIGH ALERT: ${alertHigh} SOL`);
+  document.getElementById('alertStatus').textContent = parts.join('   |   ');
+}
+function checkAlerts() {
+  if (floorPriceSol === null) return;
+  if (alertLow && floorPriceSol <= alertLow) {
+    toast(`🚨 FLOOR DROPPED TO ${floorPriceSol.toFixed(3)} SOL — BELOW YOUR ${alertLow} SOL ALERT!`, true);
+    log(`ALERT TRIGGERED: FLOOR ${floorPriceSol.toFixed(3)} ≤ ${alertLow} SOL`, 'err');
+    try { new Notification(`CGG Floor Alert`, {body:`Floor dropped to ${floorPriceSol.toFixed(3)} SOL`}); } catch(e){}
+  }
+  if (alertHigh && floorPriceSol >= alertHigh) {
+    toast(`🚀 FLOOR ROSE TO ${floorPriceSol.toFixed(3)} SOL — ABOVE YOUR ${alertHigh} SOL ALERT!`);
+    log(`ALERT TRIGGERED: FLOOR ${floorPriceSol.toFixed(3)} ≥ ${alertHigh} SOL`, 'ok');
+    try { new Notification(`CGG Floor Alert`, {body:`Floor rose to ${floorPriceSol.toFixed(3)} SOL`}); } catch(e){}
+  }
+}
+
+// ══════════════════════════════════════════
+// RENDER WALLETS
+// ══════════════════════════════════════════
 function render() {
   const list = document.getElementById('walletList');
   if (wallets.length === 0) {
     list.innerHTML = `<div class="empty"><span class="big-icon">[EMPTY]</span>NO WALLETS CONNECTED — ADD ONE ABOVE</div>`;
-    updateTicker(0);
-    return;
+    updateTicker(0); return;
   }
-
   list.innerHTML = '';
   let total = 0;
   wallets.forEach((w, i) => {
     if (w.status === 'loaded') total += (w.count || 0);
     const card = document.createElement('div');
     card.className = `wallet-card ${w.status}`;
-    const short = w.address.slice(0, 8) + '…' + w.address.slice(-6);
-    let metaText = '';
-    if (w.status === 'loading') metaText = '<span class="spinner"></span>SCANNING WALLET…';
-    else if (w.status === 'error') metaText = `<span style="color:var(--accent2)">ERR: ${w.error}</span>`;
-    else metaText = `<span style="color:var(--muted)">${w.address}</span>`;
+    const short = w.address.slice(0,8) + '…' + w.address.slice(-6);
+    let meta = '';
+    if (w.status === 'loading') meta = `<span class="spinner"></span>SCANNING WALLET…`;
+    else if (w.status === 'error') meta = `<span style="color:var(--accent2)">ERR: ${w.error}</span>`;
+    else meta = `<span style="color:var(--muted);font-size:0.58rem">${w.address}</span>`;
     card.innerHTML = `
       <div class="wallet-info">
         <div class="wallet-addr">${short}</div>
-        <div class="wallet-meta">${metaText}</div>
+        <div class="wallet-meta">${meta}</div>
       </div>
-      <div class="wallet-count">${w.status === 'loaded' ? w.count : (w.status === 'loading' ? '…' : '!')}</div>
-      <button class="wallet-remove" title="Remove wallet" onclick="removeWallet(${i})">✕</button>
+      <div class="wallet-actions">
+        <div class="wallet-count">${w.status==='loaded' ? w.count : (w.status==='loading' ? '…' : '!')}</div>
+        <a class="ext-link btn-sm" href="https://magiceden.io/u/${w.address}" target="_blank" style="font-size:0.55rem;padding:0.2rem 0.5rem;margin-left:0.3rem">ME ↗</a>
+        <button class="wallet-remove" title="Remove" onclick="removeWallet(${i})">✕</button>
+      </div>
     `;
     list.appendChild(card);
   });
-
   updateTicker(total);
+  renderNFTs();
+}
+
+// ══════════════════════════════════════════
+// RENDER NFT GRID
+// ══════════════════════════════════════════
+function renderNFTs() {
+  const grid = document.getElementById('nftGrid');
+  const allNfts = wallets.flatMap(w => (w.nfts || []).map(n => ({...n, walletShort: w.address.slice(0,6)+'…'})));
+  document.getElementById('nftCount').textContent = allNfts.length + ' ITEMS';
+  if (allNfts.length === 0) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><span class="big-icon">[EMPTY]</span>ADD WALLETS TO SEE YOUR CGGs</div>`;
+    return;
+  }
+  grid.innerHTML = '';
+  allNfts.forEach(nft => {
+    const card = document.createElement('a');
+    card.className = 'nft-card';
+    card.href = `https://www.tensor.trade/item/${nft.mint}`;
+    card.target = '_blank';
+    const imgUrl = nft.image || '';
+    card.innerHTML = `
+      ${imgUrl
+        ? `<img class="nft-img" src="${imgUrl}" alt="${nft.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        : ''}
+      <div class="nft-img-placeholder" ${imgUrl ? 'style="display:none"' : ''}>[NO IMG]</div>
+      <div class="nft-info">
+        <div class="nft-name">${nft.name || 'CGG #?'}</div>
+        <div class="nft-wallet">${nft.walletShort}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
 }
 
 function flash(id) {
   const el = document.getElementById(id);
+  if (!el) return;
   el.classList.add('flash');
   setTimeout(() => el.classList.remove('flash'), 300);
 }
 
 function updateTicker(total) {
-  document.getElementById('totalCount').textContent = total > 0 ? total : (wallets.length ? '0' : '—');
+  document.getElementById('totalCount').textContent = wallets.length ? (total || '0') : '—';
   if (floorPriceSol !== null) {
     document.getElementById('floorSol').textContent = floorPriceSol.toFixed(3);
     flash('floorSol');
-    const totalSol = (total * floorPriceSol);
+    const totalSol = total * floorPriceSol;
     document.getElementById('totalSol').textContent = totalSol.toFixed(3);
     flash('totalSol');
+    // 24h change
+    if (prevFloorPriceSol !== null && prevFloorPriceSol !== floorPriceSol) {
+      const chg = ((floorPriceSol - prevFloorPriceSol) / prevFloorPriceSol * 100);
+      const el = document.getElementById('floorChange');
+      el.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%';
+      el.className = 'ticker-value ' + (chg >= 0 ? 'alert-up' : 'alert-dn');
+      document.getElementById('floorChangeSub').textContent = (chg >= 0 ? '▲' : '▼') + ' VS PREV READING';
+    }
     if (solUsdPrice !== null) {
       const usd = totalSol * solUsdPrice;
-      document.getElementById('totalUsd').textContent = '$' + usd.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      document.getElementById('totalUsd').textContent = '$' + usd.toLocaleString('en-US', {maximumFractionDigits:2});
       document.getElementById('solPriceLabel').textContent = `1 SOL = $${solUsdPrice.toFixed(2)}`;
       flash('totalUsd');
     }
-  } else {
-    document.getElementById('floorSol').textContent = '—';
-    document.getElementById('totalSol').textContent = '—';
-    document.getElementById('totalUsd').textContent = '—';
   }
 }
 
-// ==========================================
+// ══════════════════════════════════════════
 // WALLET MANAGEMENT
-// ==========================================
+// ══════════════════════════════════════════
 function addWallet() {
   const input = document.getElementById('walletInput');
   const addr = input.value.trim();
   if (!addr) return;
-  if (addr.length < 32 || addr.length > 44) {
-    log(`INVALID ADDRESS LENGTH: ${addr.length} chars`, 'err');
-    return;
-  }
-  if (wallets.find(w => w.address === addr)) {
-    log(`WALLET ALREADY TRACKED: ${addr.slice(0,8)}…`, 'warn');
-    input.value = '';
-    return;
-  }
-  wallets.push({ address: addr, status: 'loading', count: 0, error: null });
+  if (addr.length < 32 || addr.length > 44) { log(`INVALID ADDRESS: ${addr.length} chars`, 'err'); return; }
+  if (wallets.find(w => w.address === addr)) { log(`ALREADY TRACKED: ${addr.slice(0,8)}…`, 'warn'); input.value=''; return; }
+  wallets.push({address:addr, status:'loading', count:0, nfts:[], error:null});
   input.value = '';
+  saveWallets();
   log(`ADDING WALLET: ${addr.slice(0,8)}…${addr.slice(-6)}`, 'info');
   render();
   fetchWalletNFTs(wallets.length - 1);
@@ -679,181 +658,383 @@ function addWallet() {
 function removeWallet(idx) {
   const addr = wallets[idx].address;
   wallets.splice(idx, 1);
+  saveWallets();
   log(`REMOVED WALLET: ${addr.slice(0,8)}…`, 'warn');
   render();
 }
 
-// ==========================================
-// NFT FETCHING — Helius DAS API
-// ==========================================
+// ══════════════════════════════════════════
+// NFT FETCHING — Helius DAS
+// ══════════════════════════════════════════
 async function fetchWalletNFTs(idx) {
   const wallet = wallets[idx];
   if (!wallet) return;
-  wallet.status = 'loading';
-  render();
-
+  wallet.status = 'loading'; render();
   try {
-    // Use Helius DAS getAssetsByOwner
     const resp = await fetch(HELIUS_RPC, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 'cgg',
-        method: 'getAssetsByOwner',
-        params: {
-          ownerAddress: wallet.address,
-          page: 1,
-          limit: 1000,
-          displayOptions: { showCollectionMetadata: true }
-        }
+        jsonrpc:'2.0', id:'cgg', method:'getAssetsByOwner',
+        params:{ ownerAddress:wallet.address, page:1, limit:1000, displayOptions:{showCollectionMetadata:true} }
       })
     });
     const data = await resp.json();
     if (data.error) throw new Error(data.error.message);
-
     const items = data.result?.items || [];
-    // Filter to CGG — match by on-chain collection group value or name
     const cggItems = items.filter(nft => {
-      // Check grouping array for collection key
       const grouping = nft.grouping || [];
       for (const g of grouping) {
         if (g.group_key === 'collection' && g.group_value === CGG_COLLECTION_ADDRESS) return true;
       }
-      // Fallback: name match
       const name = (nft.content?.metadata?.name || '').toLowerCase();
       return name.includes('cyber gulag') || name.includes('cgg #');
     });
-
     wallet.count = cggItems.length;
+    wallet.nfts = cggItems.map(n => ({
+      mint: n.id,
+      name: n.content?.metadata?.name || 'CGG',
+      image: n.content?.links?.image || n.content?.files?.[0]?.uri || ''
+    }));
     wallet.status = 'loaded';
-    log(`WALLET ${wallet.address.slice(0,8)}…: FOUND ${cggItems.length} CGG NFT(S)`, cggItems.length > 0 ? 'ok' : 'info');
-  } catch (err) {
+    log(`WALLET ${wallet.address.slice(0,8)}…: ${cggItems.length} CGG`, cggItems.length > 0 ? 'ok' : 'info');
+  } catch(err) {
     wallet.status = 'error';
-    wallet.error = err.message?.slice(0, 40) || 'FETCH FAILED';
-    log(`WALLET ERROR ${wallet.address.slice(0,8)}…: ${wallet.error}`, 'err');
+    wallet.error = err.message?.slice(0,40) || 'FETCH FAILED';
+    log(`WALLET ERR ${wallet.address.slice(0,8)}…: ${wallet.error}`, 'err');
   }
-
   render();
 }
 
-// ==========================================
-// FLOOR PRICE — Magic Eden public API (no key needed, CORS-friendly)
-// ==========================================
+// ══════════════════════════════════════════
+// FLOOR PRICE — Magic Eden → CoinGecko fallback
+// ══════════════════════════════════════════
 async function fetchFloorPrice() {
-  log('FETCHING CGG FLOOR PRICE FROM MAGIC EDEN…', 'info');
+  log('FETCHING FLOOR PRICE…', 'info');
   try {
-    const url = `https://api-mainnet.magiceden.dev/v2/collections/${CGG_COLLECTION_SLUG}/stats`;
-    const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    const resp = await fetch(`https://api-mainnet.magiceden.dev/v2/collections/${CGG_SLUG}/stats`, {headers:{'Accept':'application/json'}});
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
-    // ME returns floorPrice in lamports
-    if (data?.floorPrice !== undefined && data.floorPrice !== null) {
+    if (data?.floorPrice != null) {
+      prevFloorPriceSol = floorPriceSol;
       floorPriceSol = data.floorPrice / 1e9;
-      log(`FLOOR PRICE: ${floorPriceSol.toFixed(4)} SOL (MAGIC EDEN)`, 'ok');
-    } else {
-      log('ME: NO FLOOR DATA IN RESPONSE', 'warn');
-    }
-  } catch (err) {
-    log(`ME API ERROR: ${err.message?.slice(0,60)}`, 'err');
-    // Fallback: try CoinGecko NFT floor (they index CGG)
+      // Record history
+      floorHistory.push({t: Date.now(), p: floorPriceSol});
+      saveHistory();
+      log(`FLOOR: ${floorPriceSol.toFixed(4)} SOL (MAGIC EDEN)`, 'ok');
+      checkAlerts();
+    } else throw new Error('NO FLOOR DATA');
+  } catch(err) {
+    log(`ME ERROR: ${err.message?.slice(0,40)} — TRYING COINGECKO`, 'warn');
     try {
-      log('FALLING BACK TO COINGECKO NFT DATA…', 'warn');
-      const cgResp = await fetch('https://api.coingecko.com/api/v3/nfts/cyber-gulag-gang');
-      const cgData = await cgResp.json();
-      const fp = cgData?.floor_price?.native_currency;
+      const r = await fetch('https://api.coingecko.com/api/v3/nfts/cyber-gulag-gang');
+      const d = await r.json();
+      const fp = d?.floor_price?.native_currency;
       if (fp) {
+        prevFloorPriceSol = floorPriceSol;
         floorPriceSol = parseFloat(fp);
-        log(`FLOOR PRICE: ${floorPriceSol.toFixed(4)} SOL (COINGECKO)`, 'ok');
-      } else {
-        log('COINGECKO: NO FLOOR DATA EITHER', 'err');
+        floorHistory.push({t: Date.now(), p: floorPriceSol});
+        saveHistory();
+        log(`FLOOR: ${floorPriceSol.toFixed(4)} SOL (COINGECKO)`, 'ok');
+        checkAlerts();
       }
-    } catch (e2) {
-      log(`COINGECKO FALLBACK ERROR: ${e2.message?.slice(0,40)}`, 'err');
-    }
+    } catch(e2) { log(`ALL FLOOR SOURCES FAILED`, 'err'); }
   }
 }
 
-// ==========================================
-// SOL/USD PRICE — CoinGecko
-// ==========================================
+// ══════════════════════════════════════════
+// SOL PRICE — CoinGecko
+// ══════════════════════════════════════════
 async function fetchSolPrice() {
   try {
-    const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
-    const data = await resp.json();
-    solUsdPrice = data?.solana?.usd || null;
-    if (solUsdPrice) log(`SOL/USD RATE: $${solUsdPrice.toFixed(2)}`, 'ok');
-  } catch (err) {
-    log(`COINGECKO ERROR: ${err.message?.slice(0,40)}`, 'err');
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
+    const d = await r.json();
+    solUsdPrice = d?.solana?.usd || null;
+    if (solUsdPrice) log(`SOL/USD: $${solUsdPrice.toFixed(2)}`, 'ok');
+  } catch(e) { log(`SOL PRICE ERR: ${e.message?.slice(0,30)}`, 'err'); }
+}
+
+// ══════════════════════════════════════════
+// RECENT SALES — Magic Eden activity
+// ══════════════════════════════════════════
+async function fetchSales() {
+  const el = document.getElementById('salesList');
+  el.innerHTML = `<div class="empty"><span class="spinner"></span> LOADING…</div>`;
+  log('FETCHING RECENT SALES…', 'info');
+  try {
+    const r = await fetch(`https://api-mainnet.magiceden.dev/v2/collections/${CGG_SLUG}/activities?offset=0&limit=20&type=buyNow`, {headers:{'Accept':'application/json'}});
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    salesData = data || [];
+    renderSales();
+    log(`SALES: ${salesData.length} RECENT TRANSACTIONS`, 'ok');
+  } catch(err) {
+    log(`SALES ERR: ${err.message?.slice(0,40)}`, 'err');
+    el.innerHTML = `<div class="empty"><span class="big-icon">[ERR]</span>COULD NOT LOAD SALES — MAGIC EDEN API UNAVAILABLE</div>`;
   }
 }
 
-// ==========================================
+function renderSales() {
+  const el = document.getElementById('salesList');
+  if (!salesData.length) { el.innerHTML = `<div class="empty"><span class="big-icon">[EMPTY]</span>NO RECENT SALES FOUND</div>`; return; }
+  el.innerHTML = '';
+  salesData.forEach(s => {
+    const price = (s.price || 0);
+    const usd = solUsdPrice ? `$${(price * solUsdPrice).toFixed(0)}` : '';
+    const when = s.blockTime ? timeAgo(s.blockTime * 1000) : '';
+    const row = document.createElement('div');
+    row.className = 'sale-row';
+    row.innerHTML = `
+      <span class="sale-name">${s.tokenName || 'CGG'}</span>
+      <span class="sale-price">${price.toFixed(3)} SOL</span>
+      <span class="sale-usd">${usd}</span>
+      <span class="sale-time">${when}</span>
+      <a class="sale-link" href="https://magiceden.io/item-details/${s.tokenMint}" target="_blank">↗</a>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function timeAgo(ms) {
+  const s = Math.floor((Date.now() - ms) / 1000);
+  if (s < 60) return s + 's ago';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+// ══════════════════════════════════════════
+// LEADERBOARD — Top CGG holders via ME
+// ══════════════════════════════════════════
+async function fetchLeaderboard() {
+  const el = document.getElementById('leaderboardWrap');
+  el.innerHTML = `<div class="empty"><span class="spinner"></span> LOADING HOLDER DATA…</div>`;
+  log('FETCHING HOLDER LEADERBOARD…', 'info');
+  try {
+    // ME holder stats
+    const r = await fetch(`https://api-mainnet.magiceden.dev/v2/collections/${CGG_SLUG}/holder_stats`, {headers:{'Accept':'application/json'}});
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    // top holders array
+    const holders = data?.topHolders || data?.holderDistribution || [];
+    if (holders.length) {
+      leaderboardData = holders.slice(0, 20);
+      renderLeaderboard();
+      log(`LEADERBOARD: ${leaderboardData.length} TOP HOLDERS`, 'ok');
+    } else {
+      throw new Error('NO HOLDER DATA');
+    }
+  } catch(err) {
+    log(`LEADERBOARD ERR: ${err.message?.slice(0,40)}`, 'warn');
+    // Fallback: build from our own wallets + show note
+    buildLocalLeaderboard();
+  }
+}
+
+function buildLocalLeaderboard() {
+  const el = document.getElementById('leaderboardWrap');
+  const myWallets = wallets.filter(w => w.status === 'loaded' && w.count > 0)
+    .map(w => ({owner: w.address, tokenAmount: w.count}))
+    .sort((a,b) => b.tokenAmount - a.tokenAmount);
+  if (!myWallets.length) {
+    el.innerHTML = `<div class="empty"><span class="big-icon">[...]</span>ADD WALLETS FIRST — FULL LEADERBOARD REQUIRES MAGIC EDEN API</div>`;
+    return;
+  }
+  leaderboardData = myWallets;
+  renderLeaderboard(true);
+}
+
+function renderLeaderboard(localOnly = false) {
+  const el = document.getElementById('leaderboardWrap');
+  const myAddresses = new Set(wallets.map(w => w.address));
+  const max = Math.max(...leaderboardData.map(h => h.tokenAmount || h.count || 0));
+  let html = '';
+  if (localOnly) html += `<div style="font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:0.8rem">⚠ SHOWING YOUR WALLETS ONLY — ME API UNAVAILABLE FOR FULL LEADERBOARD</div>`;
+  html += `<table class="lb-table"><thead><tr><th>#</th><th>WALLET</th><th>CGGs</th><th>% SUPPLY</th><th></th></tr></thead><tbody>`;
+  leaderboardData.forEach((h, i) => {
+    const addr = h.owner || h.address || '???';
+    const count = h.tokenAmount || h.count || 0;
+    const pct = ((count / 3097) * 100).toFixed(2);
+    const barPct = Math.round((count / max) * 100);
+    const isMe = myAddresses.has(addr);
+    const short = addr.length > 12 ? addr.slice(0,6)+'…'+addr.slice(-4) : addr;
+    html += `<tr>
+      <td class="lb-rank">${i+1}</td>
+      <td class="lb-addr ${isMe?'lb-you':''}">${short} ${isMe?'<span class="tag" style="color:var(--accent3);border-color:var(--accent3)">YOU</span>':''}</td>
+      <td><span class="lb-count">${count}</span></td>
+      <td class="lb-pct">${pct}%</td>
+      <td><div class="lb-bar-wrap"><div class="lb-bar" style="width:${barPct}%"></div></div></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// FLOOR CHART — Canvas sparkline
+// ══════════════════════════════════════════
+function drawChart() {
+  const canvas = document.getElementById('floorChart');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = canvas.offsetWidth * dpr;
+  canvas.height = 120 * dpr;
+  ctx.scale(dpr, dpr);
+  const W = canvas.offsetWidth, H = 120;
+  ctx.clearRect(0, 0, W, H);
+
+  document.getElementById('chartDataPoints').textContent = floorHistory.length + ' DATA POINTS';
+
+  if (floorHistory.length < 2) {
+    ctx.fillStyle = '#5a5a48';
+    ctx.font = '12px Share Tech Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText('COLLECTING DATA — CHECK BACK AFTER A FEW REFRESHES', W/2, H/2);
+    return;
+  }
+
+  const prices = floorHistory.map(d => d.p);
+  const minP = Math.min(...prices) * 0.995;
+  const maxP = Math.max(...prices) * 1.005;
+  const pad = {t:16, b:24, l:12, r:12};
+  const cW = W - pad.l - pad.r;
+  const cH = H - pad.t - pad.b;
+
+  const toX = i => pad.l + (i / (floorHistory.length - 1)) * cW;
+  const toY = p => pad.t + (1 - (p - minP) / (maxP - minP)) * cH;
+
+  // Grid lines
+  ctx.strokeStyle = '#2a2a22';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + (i/4) * cH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+    const label = (maxP - (i/4)*(maxP-minP)).toFixed(3);
+    ctx.fillStyle = '#5a5a48';
+    ctx.font = '9px Share Tech Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, 2, y + 3);
+  }
+
+  // Area fill
+  const grad = ctx.createLinearGradient(0, pad.t, 0, H - pad.b);
+  grad.addColorStop(0, 'rgba(200,245,32,0.2)');
+  grad.addColorStop(1, 'rgba(200,245,32,0)');
+  ctx.beginPath();
+  ctx.moveTo(toX(0), toY(prices[0]));
+  for (let i = 1; i < prices.length; i++) ctx.lineTo(toX(i), toY(prices[i]));
+  ctx.lineTo(toX(prices.length-1), H - pad.b);
+  ctx.lineTo(toX(0), H - pad.b);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.moveTo(toX(0), toY(prices[0]));
+  for (let i = 1; i < prices.length; i++) ctx.lineTo(toX(i), toY(prices[i]));
+  ctx.strokeStyle = '#c8f520';
+  ctx.lineWidth = 2;
+  ctx.shadowColor = '#c8f520';
+  ctx.shadowBlur = 6;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Dot at latest point
+  const lx = toX(prices.length-1), ly = toY(prices[prices.length-1]);
+  ctx.beginPath();
+  ctx.arc(lx, ly, 4, 0, Math.PI*2);
+  ctx.fillStyle = '#c8f520';
+  ctx.shadowColor = '#c8f520';
+  ctx.shadowBlur = 10;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Time labels
+  if (floorHistory.length >= 2) {
+    ctx.fillStyle = '#5a5a48';
+    ctx.font = '9px Share Tech Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText(new Date(floorHistory[0].t).toLocaleTimeString(), pad.l, H - 4);
+    ctx.textAlign = 'right';
+    ctx.fillText(new Date(floorHistory[floorHistory.length-1].t).toLocaleTimeString(), W - pad.r, H - 4);
+  }
+}
+
+// ══════════════════════════════════════════
 // REFRESH ALL
-// ==========================================
+// ══════════════════════════════════════════
 async function refreshAll() {
   log('── REFRESH CYCLE STARTED ──', 'info');
   document.getElementById('statusText').textContent = 'REFRESHING DATA…';
-
   await Promise.all([fetchFloorPrice(), fetchSolPrice()]);
-
-  for (let i = 0; i < wallets.length; i++) {
-    await fetchWalletNFTs(i);
-  }
-
+  for (let i = 0; i < wallets.length; i++) await fetchWalletNFTs(i);
   render();
+  // Refresh active tab data
+  if (document.getElementById('panel-sales').classList.contains('active')) fetchSales();
+  if (document.getElementById('panel-chart').classList.contains('active')) drawChart();
   document.getElementById('statusText').textContent = `LAST SYNC: ${new Date().toLocaleTimeString()}`;
-  log('── REFRESH CYCLE COMPLETE ──', 'ok');
+  log('── REFRESH COMPLETE ──', 'ok');
   resetCountdown();
 }
 
-// ==========================================
-// COUNTDOWN TIMER
-// ==========================================
+// ══════════════════════════════════════════
+// COUNTDOWN
+// ══════════════════════════════════════════
 function resetCountdown() {
   clearInterval(countdownTimer);
-  clearTimeout(refreshTimer);
   countdownSecs = REFRESH_INTERVAL;
   startCountdown();
 }
-
 function startCountdown() {
   updateCountdownUI();
   countdownTimer = setInterval(() => {
     countdownSecs--;
     updateCountdownUI();
-    if (countdownSecs <= 0) {
-      clearInterval(countdownTimer);
-      refreshAll();
-    }
+    if (countdownSecs <= 0) { clearInterval(countdownTimer); refreshAll(); }
   }, 1000);
 }
-
 function updateCountdownUI() {
   document.getElementById('countdown').textContent = countdownSecs + 's';
-  const pct = ((REFRESH_INTERVAL - countdownSecs) / REFRESH_INTERVAL) * 100;
-  document.getElementById('refreshBar').style.width = pct + '%';
+  document.getElementById('refreshBar').style.width = ((REFRESH_INTERVAL - countdownSecs) / REFRESH_INTERVAL * 100) + '%';
 }
 
-// ==========================================
-// ENTER KEY ON INPUT
-// ==========================================
-document.getElementById('walletInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addWallet();
-});
+// ══════════════════════════════════════════
+// ENTER KEY
+// ══════════════════════════════════════════
+document.getElementById('walletInput').addEventListener('keydown', e => { if (e.key === 'Enter') addWallet(); });
 
-// ==========================================
+// ══════════════════════════════════════════
+// REQUEST NOTIFICATIONS
+// ══════════════════════════════════════════
+if ('Notification' in window && Notification.permission === 'default') {
+  Notification.requestPermission();
+}
+
+// ══════════════════════════════════════════
 // INIT
-// ==========================================
+// ══════════════════════════════════════════
 (async function init() {
-  log('ANA\'S ARCHIVE — SYSTEM BOOT', 'info');
-  log('CYBER GULAG GANG TRACKER v1.0', 'info');
+  log("ANA'S ARCHIVE — SYSTEM BOOT v2.0", 'info');
+  log('CYBER GULAG GANG COMMUNITY TRACKER', 'info');
+  loadHistory();
+  loadAlerts();
   log('FETCHING MARKET DATA…', 'info');
-  await fetchSolPrice();
-  await fetchFloorPrice();
-  render();
+  await Promise.all([fetchSolPrice(), fetchFloorPrice()]);
+  // Load saved wallets
+  const saved = loadWallets();
+  if (saved.length) {
+    log(`RESTORING ${saved.length} SAVED WALLET(S)…`, 'info');
+    for (const addr of saved) {
+      wallets.push({address:addr, status:'loading', count:0, nfts:[], error:null});
+    }
+    render();
+    for (let i = 0; i < wallets.length; i++) await fetchWalletNFTs(i);
+  } else {
+    render();
+  }
+  log('READY', 'ok');
   resetCountdown();
-  log('READY — ADD WALLET ADDRESSES TO BEGIN', 'ok');
 })();
 </script>
 </body>
